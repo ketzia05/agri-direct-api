@@ -36,5 +36,10 @@ public class Product{
 		return this.quantity;
 	}
 	
+	public void reduceQuantity(int qty) {
+	    if(qty <= this.quantity) {
+	        this.quantity -= qty;
+	    }
+	}
 }
 

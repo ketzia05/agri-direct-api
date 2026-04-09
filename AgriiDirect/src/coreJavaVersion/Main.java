@@ -20,5 +20,7 @@ public class Main {
         Buyer b = new Buyer(101, "Arun");
         System.out.println();
         b.viewProducts(m);
+        b.buyProduct(m, "Corn", 15);
+        b.viewProducts(m);
     }
 }

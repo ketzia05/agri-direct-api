@@ -21,4 +21,25 @@ class MarketPlace {
             System.out.println();
         }
     }
+    
+    public void buyFarmerProducts(String name, int qty) {
+    		for(Farmer f : farmers) {
+    			for(Product p : f.getProducts()) {
+    				if(p.getName().equalsIgnoreCase(name)) {
+    					if(p.getQuantity() < qty) {
+    						System.out.println("Insufficient Quantity");
+    					}
+    					else {
+    						p.reduceQuantity(qty);
+    						System.out.println("Purchased " + qty + "kg of " + name +
+    							    " from " + f.getName() +
+    							    ". Remaining: " + p.getQuantity());
+    					}
+    					System.out.println();
+    					return;
+    				}
+    			}
+    		}
+    		System.out.println("Product not found");
+    }
 }
