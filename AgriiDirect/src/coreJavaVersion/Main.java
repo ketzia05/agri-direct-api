@@ -1,26 +1,53 @@
 package coreJavaVersion;
 
+import java.util.*;
+import java.sql.*;
+
 public class Main {
     public static void main(String[] args) {
-    		System.out.println("!!!!!Welcome to AgriDirect!!!!!");
-    		System.out.println();
-        MarketPlace m = new MarketPlace();
+    		
+    		Scanner s = new Scanner(System.in);
+    		
+    		Connection con = DBConnection.getConnection();
+    		
+    		
+    		
+    		try {
+    				String query = "insert into users(id, name, role) values (?,?,?)";
+				PreparedStatement ps = con.prepareStatement(query);
+				
+				System.out.println("Enter Your ID: ");
+				ps.setInt(1, s.nextInt());
+				s.nextLine();
+				System.out.println("Enter Your name: ");
+				ps.setString(2, s.nextLine());
+				System.out.println("Enter Your role: ");
+				ps.setString(3, s.nextLine());
+				
+				ps.executeUpdate();
+				
+				String selectQuery = "SELECT * FROM users";
 
-        Farmer f1 = new Farmer(1, "Ravi");
-        f1.addProduct(new Product("Tomato", 20, 50));
-        f1.addProduct(new Product("Potato", 30, 20));
-        System.out.println();
-        Farmer f2 = new Farmer(2, "Kumar");
-        f2.addProduct(new Product("Papaya", 35, 50));
-        f2.addProduct(new Product("Corn", 50, 20));
-        System.out.println();
-        m.addFarmer(f1);
-        m.addFarmer(f2);
+				PreparedStatement ps2 = con.prepareStatement(selectQuery);
 
-        Buyer b = new Buyer(101, "Arun");
-        System.out.println();
-        b.viewProducts(m);
-        b.buyProduct(m, "Corn", 15);
-        b.viewProducts(m);
+				ResultSet rs = ps2.executeQuery();
+
+				while (rs.next()) {
+				    System.out.println(
+				        rs.getInt("id") + " " +
+				        rs.getString("name") + " " +
+				        rs.getString("role")
+				    );
+				}
+				
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
+    		
+    			s.close();
+        
     }
 }
