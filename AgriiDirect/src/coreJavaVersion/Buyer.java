@@ -1,5 +1,7 @@
 package coreJavaVersion;
 
+import java.sql.SQLException;
+
 class Buyer extends User {
 
     public Buyer(int id, String name) {
@@ -7,11 +9,7 @@ class Buyer extends User {
         System.out.println("Buyer created: " + name + " (ID: " + id + ")");
     }
     
-    public void viewProducts(MarketPlace m) {
-    		m.showAllProducts();
-    }
-    
-    public void buyProduct(MarketPlace m, String name, int qty) {
-    		m.buyFarmerProducts(name, qty);
+    public void buyProduct(MarketPlace m, String name, int qty) throws SQLException {
+    		m.buyProduct(name, qty);
     }
 }

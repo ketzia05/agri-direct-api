@@ -1,0 +1,64 @@
+Main.java
+
+/*System.out.println("!!!!!Welcome to AgriDirect!!!!!");
+    		System.out.println();
+        MarketPlace m = new MarketPlace();
+
+        Farmer f1 = new Farmer(1, "Ravi");
+        f1.addProduct(new Product("Tomato", 20, 50));
+        f1.addProduct(new Product("Potato", 30, 20));
+        System.out.println();
+        Farmer f2 = new Farmer(2, "Kumar");
+        f2.addProduct(new Product("Papaya", 35, 50));
+        f2.addProduct(new Product("Corn", 50, 20));
+        System.out.println();
+        m.addFarmer(f1);
+        m.addFarmer(f2);
+
+        Buyer b = new Buyer(101, "Arun");
+        System.out.println();
+        b.viewProducts(m);
+        b.buyProduct(m, "Corn", 15);
+        b.viewProducts(m);
+*/
+
+
+MarketPlace.java
+private List<Farmer> farmers = new ArrayList<>();
+
+    public void addFarmer(Farmer f) {
+        farmers.add(f);
+    }
+
+    public void showAllProducts() {
+    		System.out.println("!!!Available Products!!!");
+        for (Farmer f : farmers) {
+            System.out.println("Farmer: " + f.getName());
+            for (Product p : f.getProducts()) {
+                System.out.println(
+                    p.getName() + " - ₹" + p.getPrice() + " - Qty: " + p.getQuantity()
+                );
+            }
+            System.out.println();
+        }
+    }
+    
+    public void buyFarmerProducts(String name, int qty) {
+    		for(Farmer f : farmers) {
+    			for(Product p : f.getProducts()) {
+    				if(p.getName().equalsIgnoreCase(name)) {
+    					if(p.getQuantity() < qty) {
+    						System.out.println("Insufficient Quantity");
+    					}
+    					else {
+    						p.reduceQuantity(qty);
+    						System.out.println("Purchased " + qty + "kg of " + name +
+    							    " from " + f.getName() +
+    							    ". Remaining: " + p.getQuantity());
+    					}
+    					System.out.println();
+    					return;
+    				}
+    			}
+    		}
+    		System.out.println("Product not found");

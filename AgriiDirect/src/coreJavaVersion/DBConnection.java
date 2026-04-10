@@ -15,7 +15,6 @@ public class DBConnection {
     				"scott",
     				"tiger"
             );
-            System.out.println("Connection successful");
 
         } catch (SQLException e) {
             System.out.println("Connection failed");

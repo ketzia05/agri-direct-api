@@ -1,19 +1,16 @@
 package coreJavaVersion;
 
 public class Product{
-	
+	private int id;
 	private String name;
 	private int price;
 	private int quantity;
 	
-	public Product(String name, int price, int q) {
+	public Product(int id, String name, int price, int q) {
+		this.id = id;
 		this.name = name;
 		this.price = price;
 		this.quantity = q;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
 	}
 	
 	public void setPrice(int p) {
@@ -22,6 +19,10 @@ public class Product{
 	
 	public void setQuantity(int q) {
 		this.quantity = q;
+	}
+	
+	public int getId() {
+		return this.id;
 	}
 	
 	public String getName() {
