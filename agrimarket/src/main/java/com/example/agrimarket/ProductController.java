@@ -23,22 +23,17 @@ public class ProductController {
 	    return service.getProducts();
 	}
 	
-	//Find the particular product
-	@GetMapping("/products/find/{name}")
-	public String getProduct(@PathVariable String name) {
-	    return service.findPro(name);
-	}
 	
 	//Update the quantity of the product
 	@PutMapping("/products/update/{name}")
 	public String updateQty(@PathVariable String name,
 	                        @RequestParam int qty) {
-	    return service.updatePro(name, qty);
+	    return service.updateQuantity(name, qty);
 	}
 	
 	//Delete a product
 	@DeleteMapping("/products/delete/{name}")
 	public String delProduct(@PathVariable String name) {
-	    return service.delPro(name);
+	    return service.deleteProduct(name);
 	}
 }
