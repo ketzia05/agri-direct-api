@@ -1,42 +1,34 @@
 package com.example.agrimarket;
 
 import jakarta.persistence.*;
+import java.util.*;
 
 @Entity
 public class Farmer {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
-	
-	private String name;
-	private String location;
-	
-	public Farmer() {}
-	
-	public Farmer(String name, String location) {
-		this.name = name;
-		this.location = location;
-	}
-	
-	public int getId() {
-		return this.id;
-	}
-	
-	public String getName() {
-		return this.name;
-	}
-	
-	public String getLocation() {
-		return this.location;
-	}
-	
-	public void setLocation(String loc) {
-		this.location = loc;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
-	
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+
+    private String name;
+    private String location;
+
+    // 🔥 NEW: Relationship
+    @OneToMany(mappedBy = "farmer")
+    private List<Product> products;
+
+    public Farmer() {}
+
+    public Farmer(String name, String location) {
+        this.name = name;
+        this.location = location;
+    }
+
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public String getLocation() { return location; }
+    public List<Product> getProducts() { return products; }
+
+    public void setName(String name) { this.name = name; }
+    public void setLocation(String location) { this.location = location; }
 }
