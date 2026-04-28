@@ -1,5 +1,7 @@
 package com.example.agrimarket;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -7,10 +9,12 @@ public class PurchaseService {
 
 	private ProductRepository productRepo;
 	private BuyerRepository buyerRepo;
+	private TransactionRepository transactionRepo;
 
-	public PurchaseService(ProductRepository productRepo, BuyerRepository buyerRepo) {
+	public PurchaseService(ProductRepository productRepo, BuyerRepository buyerRepo, TransactionRepository transactionRepo) {
 	    this.productRepo = productRepo;
 	    this.buyerRepo = buyerRepo;
+	    this.transactionRepo = transactionRepo;
 	}
 	
 	public String purchase(int productId, int buyerId, int qty) {
@@ -42,6 +46,19 @@ public class PurchaseService {
 		
 		p.setQty(p.getQty() - qty);
 		b.setBal(b.getBal() - total);
+		
+		Transaction t = new Transaction();
+
+		t.setProduct(p);
+		t.setQty(qty);
+
+		t.setTotalPrice(total);
+
+		t.setBuyer(b);
+
+		t.setPurchaseDate(LocalDateTime.now());
+
+		transactionRepo.save(t);
 		
 		productRepo.save(p);
 		buyerRepo.save(b);

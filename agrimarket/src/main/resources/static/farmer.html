@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Farmer Dashboard - AgriMarket</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            background: #f5f6fa;
+        }
+
+        .header {
+            background: #2ecc71;
+            color: white;
+            padding: 15px 30px;
+            font-size: 20px;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        input, select, button {
+            padding: 8px;
+            margin: 5px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .message {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">Farmer Dashboard</div>
+
+<div class="container">
+
+    <!-- Farmer Selection -->
+    <h3>Select Farmer</h3>
+    <select id="farmerId"></select>
+
+    <!-- Add Product -->
+    <h3>Add Product</h3>
+    <input type="text" id="name" placeholder="Product Name">
+    <input type="number" id="price" placeholder="Price">
+    <input type="number" id="qty" placeholder="Quantity">
+    <button onclick="addProduct()">Add</button>
+
+    <div id="msg" class="message"></div>
+
+    <!-- Product List -->
+    <h3>My Products</h3>
+    <div id="productList" class="grid"></div>
+
+</div>
+
+<script>
+
+    // LOAD FARMERS
+    function loadFarmers() {
+        fetch("http://localhost:8080/farmers")
+        .then(res => res.json())
+        .then(data => {
+            let dropdown = document.getElementById("farmerId");
+            dropdown.innerHTML = `<option value="">Select Farmer</option>`;
+
+            data.forEach(f => {
+                let option = document.createElement("option");
+                option.value = f.id;
+                option.text = f.name;
+                dropdown.appendChild(option);
+            });
+        });
+    }
+
+    // LOAD PRODUCTS (FILTER BY FARMER)
+    function loadProducts() {
+
+        let farmerId = document.getElementById("farmerId").value;
+        if (!farmerId) return;
+
+        fetch("http://localhost:8080/products")
+        .then(res => res.json())
+        .then(data => {
+
+            let container = document.getElementById("productList");
+            container.innerHTML = "";
+
+            let myProducts = data.filter(p => p.farmer.id == farmerId);
+
+            if (myProducts.length === 0) {
+                container.innerHTML = "<p>No products</p>";
+                return;
+            }
+
+            myProducts.forEach(p => {
+                let card = document.createElement("div");
+                card.className = "card";
+
+                card.innerHTML = `
+                    <div><b>${p.name}</b></div>
+                    <div>Price: ₹${p.price}</div>
+                    <div>Stock: ${p.qty}</div>
+
+                    <input type="number" id="updateQty${p.id}" placeholder="New Qty">
+					<input type="number" id="updatePrice${p.id}" placeholder="New Price">
+                    <button onclick="updateQty(${p.id})">Update</button>
+					<button onclick="updatePrice(${p.id})">Update Price</button>
+                    <button onclick="deleteProduct(${p.id})">Delete</button>
+                `;
+
+                container.appendChild(card);
+            });
+        });
+    }
+
+    // ADD PRODUCT
+    function addProduct() {
+
+        let farmerId = document.getElementById("farmerId").value;
+        let name = document.getElementById("name").value;
+        let price = document.getElementById("price").value;
+        let qty = document.getElementById("qty").value;
+
+        if (!farmerId || !name || !price || !qty) {
+            showMsg("All fields required", false);
+            return;
+        }
+
+        fetch(`http://localhost:8080/products?farmerId=${farmerId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: name,
+                price: parseInt(price),
+                qty: parseInt(qty)
+            })
+        })
+        .then(res => res.text())
+        .then(msg => {
+            showMsg(msg, true);
+            loadProducts();
+        });
+    }
+
+    // UPDATE QUANTITY
+    function updateQty(productId) {
+
+        let newQty = document.getElementById("updateQty" + productId).value;
+
+        if (!newQty || newQty < 0) {
+            showMsg("Invalid quantity", false);
+            return;
+        }
+
+        fetch(`http://localhost:8080/products/${productId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                qty: parseInt(newQty)
+            })
+        })
+        .then(res => res.text())
+        .then(msg => {
+            showMsg(msg, true);
+            loadProducts();
+        });
+    }
+	
+	// UPDATE PRICE
+	function updatePrice(productId) {
+
+	        let newPrice = document.getElementById("updatePrice" + productId).value;
+
+	        if (!newPrice || newPrice < 0) {
+	            showMsg("Invalid quantity", false);
+	            return;
+	        }
+
+	        fetch(`http://localhost:8080/products/${productId}`, {
+	            method: "PUT",
+	            headers: {
+	                "Content-Type": "application/json"
+	            },
+	            body: JSON.stringify({
+	                price: parseInt(newPrice)
+	            })
+	        })
+	        .then(res => res.text())
+	        .then(msg => {
+	            showMsg(msg, true);
+	            loadProducts();
+	        });
+	    }
+
+    // DELETE PRODUCT
+    function deleteProduct(productId) {
+
+        fetch(`http://localhost:8080/products/${productId}`, {
+            method: "DELETE"
+        })
+        .then(res => res.text())
+        .then(msg => {
+            showMsg(msg, true);
+            loadProducts();
+        });
+    }
+
+    // MESSAGE HANDLER
+    function showMsg(msg, success) {
+        let box = document.getElementById("msg");
+        box.innerText = msg;
+        box.style.color = success ? "green" : "red";
+    }
+
+    // EVENTS
+    document.getElementById("farmerId").addEventListener("change", loadProducts);
+
+    // INITIAL LOAD
+    loadFarmers();
+
+</script>
+
+</body>
+</html>

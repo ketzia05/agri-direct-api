@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	    <title>AgriMarket</title>
+
+	<style>
+	    body {
+	        font-family: Arial, sans-serif;
+	        margin: 0;
+	        background-color: #f5f6fa;
+	    }
+
+	    .header {
+	        background-color: #2ecc71;
+	        color: white;
+	        padding: 15px 30px;
+	        display: flex;
+	        align-items: center;
+	        font-size: 20px;
+	        font-weight: bold;
+	    }
+
+	    .container {
+	        padding: 20px;
+	    }
+
+	    h2 {
+	        margin-bottom: 20px;
+	    }
+
+	    /* Buyer input */
+	    .buyer-box {
+	        margin-bottom: 20px;
+	    }
+
+	    input {
+	        padding: 8px;
+	        margin-right: 10px;
+	    }
+
+	    /* Grid */
+	    .grid {
+	        display: grid;
+	        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	        gap: 20px;
+	    }
+
+	    /* Card */
+	    .card {
+	        background: white;
+	        padding: 20px;
+	        border-radius: 10px;
+	        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+	    }
+
+	    .name {
+	        font-size: 18px;
+	        font-weight: bold;
+	    }
+
+	    .price {
+	        color: #27ae60;
+	        margin-top: 10px;
+	    }
+
+	    .qty {
+	        color: #555;
+	        margin-top: 5px;
+	    }
+
+	    .farmer {
+	        margin-top: 5px;
+	        font-size: 14px;
+	        color: #777;
+	    }
+
+	    button {
+	        margin-top: 15px;
+	        padding: 8px 12px;
+	        background: #2ecc71;
+	        border: none;
+	        color: white;
+	        border-radius: 5px;
+	        cursor: pointer;
+	    }
+
+	    button:hover {
+	        background: #27ae60;
+	    }
+
+	    .message {
+	        margin-top: 20px;
+	        font-weight: bold;
+	    }
+	</style>
+
+	</head>
+
+	<body>
+
+	<div class="header">AgriMarket</div>
+
+	<div class="container">
+
+	    <h2>Available Products</h2>
+
+	    <!-- Buyer Input -->
+	    <div class="buyer-box">
+			<div class="buyer-box">
+			    <label>Select Buyer:</label>
+			    <select id="buyerId">
+			        <option value="">-- Select Buyer --</option>
+			    </select>
+			</div>
+	    </div>
+
+	    <!-- Products -->
+	    <div id="productList" class="grid"></div>
+
+	    <!-- Message -->
+	    <div id="msg" class="message"></div>
+
+	</div>
+
+	<script>
+
+	    // LOAD PRODUCTS
+	    function loadProducts() {
+	        fetch("http://localhost:8080/products")
+	        .then(res => {
+	            if (!res.ok) throw new Error("API failed");
+	            return res.json();
+	        })
+	        .then(data => {
+
+	            let container = document.getElementById("productList");
+	            container.innerHTML = "";
+
+	            if (!data || data.length === 0) {
+	                container.innerHTML = "<p>No products available</p>";
+	                return;
+	            }
+
+	            data.forEach(p => {
+	                let card = document.createElement("div");
+	                card.className = "card";
+
+	                card.innerHTML = `
+	                    <div class="name">${p.name}</div>
+	                    <div class="price">Rs. ${p.price}</div>
+	                    <div class="qty">Stock: ${p.qty}</div>
+	                    <div class="farmer">Farmer: ${p.farmer?.name || "Unknown"}</div>
+
+	                    <button 
+	                        onclick="buyProduct(${p.id})"
+	                        ${p.qty === 0 ? "disabled" : ""}
+	                    >
+	                        ${p.qty === 0 ? "Out of Stock" : "Buy"}
+	                    </button>
+	                `;
+
+	                container.appendChild(card);
+	            });
+	        })
+	        .catch(err => {
+	            console.error(err);
+	            document.getElementById("productList").innerHTML =
+	                "<p>Failed to load products</p>";
+	        });
+	    }
+
+
+	    // BUY PRODUCT
+	    function buyProduct(productId) {
+
+	        let buyerId = document.getElementById("buyerId").value;
+	        let qty = prompt("Enter quantity:");
+
+	        // ✅ VALIDATION
+	        if (!buyerId) {
+	            alert("Please enter Buyer ID");
+	            return;
+	        }
+
+	        if (!qty || isNaN(qty) || qty <= 0) {
+	            alert("Enter valid quantity");
+	            return;
+	        }
+
+	        fetch("http://localhost:8080/purchase", {
+	            method: "POST",
+	            headers: {
+	                "Content-Type": "application/json"
+	            },
+	            body: JSON.stringify({
+	                productId: productId,
+	                buyerId: parseInt(buyerId),
+	                qty: parseInt(qty)
+	            })
+	        })
+	        .then(res => res.text())
+	        .then(msg => {
+
+	            let msgBox = document.getElementById("msg");
+
+	            msgBox.innerText = msg;
+
+	            // ✅ BETTER MESSAGE COLORS
+	            if (msg.toLowerCase().includes("success")) {
+	                msgBox.style.color = "green";
+	            } else {
+	                msgBox.style.color = "red";
+	            }
+
+	            loadProducts(); // refresh UI
+	        })
+	        .catch(err => {
+	            console.error(err);
+
+	            let msgBox = document.getElementById("msg");
+	            msgBox.innerText = "Purchase failed";
+	            msgBox.style.color = "red";
+	        });
+	    }
+		
+		function loadBuyers() {
+		        fetch("http://localhost:8080/buyer")
+		        .then(res => {
+		            if (!res.ok) throw new Error("Buyer API failed");
+		            return res.json();
+		        })
+		        .then(data => {
+
+		            let dropdown = document.getElementById("buyerId");
+		            dropdown.innerHTML = `<option value="">-- Select Buyer --</option>`;
+
+		            data.forEach(b => {
+		                let option = document.createElement("option");
+
+		                option.value = b.id;
+		                option.text = `${b.name} (Balance: Rs.${b.bal})`;
+
+		                dropdown.appendChild(option);
+		            });
+		        })
+		        .catch(err => {
+		            console.error(err);
+		        });
+		    }
+
+	    // INITIAL LOAD
+		loadBuyers();
+		loadProducts();
+
+	</script>
+
+	</body>
+
+</html>

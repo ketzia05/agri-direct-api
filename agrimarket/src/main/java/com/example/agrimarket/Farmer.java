@@ -1,5 +1,5 @@
 package com.example.agrimarket;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.*;
 
@@ -15,6 +15,7 @@ public class Farmer {
 
     // 🔥 NEW: Relationship
     @OneToMany(mappedBy = "farmer")
+    @JsonIgnore
     private List<Product> products;
 
     public Farmer() {}

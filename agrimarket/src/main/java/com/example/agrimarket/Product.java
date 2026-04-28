@@ -16,6 +16,7 @@ public class Product {
     // 🔥 NEW: Relationship
     @ManyToOne
     @JoinColumn(name = "farmer_id")
+    
     private Farmer farmer;
 
     public Product() {}
