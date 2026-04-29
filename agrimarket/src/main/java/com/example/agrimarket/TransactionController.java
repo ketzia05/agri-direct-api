@@ -17,4 +17,14 @@ public class TransactionController {
     public List<Transaction> getAllTransactions() {
         return repo.findAll();
     }
+    
+    @GetMapping("/transactions/buyer/{id}")
+    public List<Transaction> getBuyerHistory(@PathVariable int id) {
+        return repo.findByBuyerId(id);
+    }
+
+    @GetMapping("/transactions/farmer/{id}")
+    public List<Transaction> getFarmerHistory(@PathVariable int id) {
+        return repo.findByFarmerId(id);
+    }
 }

@@ -56,6 +56,7 @@
     <!-- Farmer Selection -->
     <h3>Select Farmer</h3>
     <select id="farmerId"></select>
+	<button onclick="viewFarmerHistory()">See My Sales</button>
 
     <!-- Add Product -->
     <h3>Add Product</h3>
@@ -69,6 +70,9 @@
     <!-- Product List -->
     <h3>My Products</h3>
     <div id="productList" class="grid"></div>
+	
+	<h2>My Sales History</h2>
+	<div id="salesHistory" class="grid"></div>
 
 </div>
 
@@ -238,6 +242,62 @@
     // EVENTS
     document.getElementById("farmerId").addEventListener("change", loadProducts);
 
+	function viewFarmerHistory() {
+
+	    let farmerId = document.getElementById("farmerId").value;
+
+	    if (!farmerId) {
+	        alert("Please select Farmer");
+	        return;
+	    }
+
+	    fetch(`http://localhost:8080/transactions/farmer/${farmerId}`)
+	    .then(res => {
+	        if (!res.ok) throw new Error("Farmer history failed");
+	        return res.json();
+	    })
+	    .then(data => {
+
+	        let container = document.getElementById("salesHistory");
+	        container.innerHTML = "";
+
+	        if (!data || data.length === 0) {
+	            container.innerHTML = "<p>No sales history found</p>";
+	            return;
+	        }
+
+			let totalEarned = data.reduce((sum, t) => sum + t.totalPrice, 0);
+
+			container.innerHTML = `<h3>Total Earnings: Rs. ${totalEarned}</h3>`;
+				
+	        data.forEach(t => {
+
+	            let card = document.createElement("div");
+	            card.className = "card";
+
+	            card.innerHTML = `
+	                <div class="name">${t.product?.name || "Unknown Product"}</div>
+	                <div class="qty">Sold Qty: ${t.qty}</div>
+	                <div class="price">Earned: Rs. ${t.totalPrice}</div>
+	                <div>Buyer: ${t.buyer?.name || "Unknown Buyer"}</div>
+	                <div>Date: ${t.purchaseDate}</div>
+	            `;
+
+	            container.appendChild(card);
+	        });
+
+	        document.getElementById("salesHistory").scrollIntoView({
+	            behavior: "smooth"
+	        });
+
+	    })
+	    .catch(err => {
+	        console.error(err);
+	        document.getElementById("salesHistory").innerHTML =
+	            "<p>Failed to load sales history</p>";
+	    });
+	}
+	
     // INITIAL LOAD
     loadFarmers();
 

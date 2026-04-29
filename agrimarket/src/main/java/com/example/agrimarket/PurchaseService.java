@@ -55,7 +55,7 @@ public class PurchaseService {
 		t.setTotalPrice(total);
 
 		t.setBuyer(b);
-
+		t.setFarmer(p.getFarmer());
 		t.setPurchaseDate(LocalDateTime.now());
 
 		transactionRepo.save(t);

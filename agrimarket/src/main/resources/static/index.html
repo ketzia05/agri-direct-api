@@ -111,6 +111,7 @@
 			    <select id="buyerId">
 			        <option value="">-- Select Buyer --</option>
 			    </select>
+				<button onclick="viewBuyerHistory()">See My History</button>
 			</div>
 	    </div>
 
@@ -119,6 +120,8 @@
 
 	    <!-- Message -->
 	    <div id="msg" class="message"></div>
+		<h2>My Purchase History</h2>
+		<div id="historyList" class="grid"></div>
 
 	</div>
 
@@ -248,6 +251,57 @@
 		        });
 		    }
 
+			function viewBuyerHistory() {
+
+			    let buyerId = document.getElementById("buyerId").value;
+					
+			    if (!buyerId) {
+			        alert("Please select Buyer");
+			        return;
+			    }
+
+			    fetch(`http://localhost:8080/transactions/buyer/${buyerId}`)
+			    .then(res => {
+			        if (!res.ok) throw new Error("History fetch failed");
+			        return res.json();
+			    })
+			    .then(data => {
+
+			        let container = document.getElementById("historyList");
+			        container.innerHTML = "";
+
+			        if (!data || data.length === 0) {
+			            container.innerHTML = "<p>No purchase history found</p>";
+			            return;
+			        }
+
+			        data.forEach(t => {
+
+			            let card = document.createElement("div");
+			            card.className = "card";
+
+						card.innerHTML = `
+						    <div class="name">${t.product?.name || "Unknown Product"}</div>
+						    <div class="qty">Qty: ${t.qty}</div>
+						    <div class="price">Total: Rs. ${t.totalPrice}</div>
+						    <div class="farmer">Farmer: ${t.farmer?.name || "Unknown Farmer"}</div>
+						    <div>Date: ${t.purchaseDate}</div>
+						`;
+
+			            container.appendChild(card);
+			        });
+					document.getElementById("historyList").scrollIntoView({
+					    behavior: "smooth"
+					});
+
+			    })
+			    .catch(err => {
+			        console.error(err);
+			        document.getElementById("historyList").innerHTML =
+			            "<p>Failed to load history</p>";
+			    });
+			}
+			
 	    // INITIAL LOAD
 		loadBuyers();
 		loadProducts();

@@ -19,11 +19,11 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @JsonIgnoreProperties({"farmer"})
     private Product product;
 
     @ManyToOne
     @JoinColumn(name = "farmer_id")
-    @JsonIgnoreProperties({"farmer"})
     private Farmer farmer;
 
     private int qty;
@@ -41,8 +41,8 @@ public class Transaction {
     public Product getProduct() { return product; }
     public void setProduct(Product product) { this.product = product; }
 
-//    public Farmer getFarmer() { return farmer; }
-//    public void setFarmer(Farmer farmer) { this.farmer = farmer; }
+    public Farmer getFarmer() { return farmer; }
+    public void setFarmer(Farmer farmer) { this.farmer = farmer; }
 
     public int getQty() { return qty; }
     public void setQty(int qty) { this.qty = qty; }
