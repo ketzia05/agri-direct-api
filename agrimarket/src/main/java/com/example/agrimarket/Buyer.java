@@ -10,33 +10,30 @@ public class Buyer {
 	private int id;
 	
 	private String name;
-	private Integer bal;
+	private String username;
+	private String password;
+	private Integer wallet;
 	
 	public Buyer() {}
 	
-	public Buyer(String name, Integer bal) {
+	public Buyer(String name, String username, String password, Integer wallet) {
 		this.name = name;
-		this.bal = bal;
+		this.username = username;
+		this.password = password;
+		this.wallet = wallet;
 	}
 	
-	public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Integer getBal() {
-        return bal;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setBal(Integer bal) {
-        this.bal = bal;
-    }
+	public void setName(String name) { this.name = name; }
+	public String getName() { return name; }
 	
+	public void setUsername(String username) { this.username = username; }
+	public String getUsername() { return username; }
+	
+	public void setPassword(String password) { this.password = password; }
+	public String getPassword() { return password; }
+	
+	public void setWallet(Integer wallet) { this.wallet = wallet; }
+	public Integer getWallet() { return wallet; }
+
+	public int getId() { return id; }
 }

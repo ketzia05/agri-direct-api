@@ -1,30 +1,32 @@
 package com.example.agrimarket;
 
-import java.util.List;
-
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin("*")
 public class FarmerController {
 
-	private FarmerService service;
-	
-	public FarmerController(FarmerService service) {
-		this.service = service;
-	}
-	
-	@PostMapping("/farmers")
-	public String addFar(@RequestBody Farmer f) {
-		return service.addFarmer(f);
-	}
-	
-	@GetMapping("/farmers")
-	public List<Farmer> getFar(){
-		return service.getFarmers();
-	}
-	
-	@DeleteMapping("/farmers/delete/{name}")
-	public String delF(@PathVariable String name) {
-		return service.deleteFarmer(name);
-	}
+    private FarmerService farmerService;
+
+    public FarmerController(FarmerService farmerService) {
+        this.farmerService = farmerService;
+    }
+
+    // SIGNUP
+    @PostMapping("/farmer")
+    public String addFarmer(@RequestBody Farmer farmer) {
+
+        return farmerService.signup(farmer);
+    }
+
+    // LOGIN
+    @PostMapping("/farmer/login")
+    public Farmer login(@RequestBody LoginRequest request) {
+        return farmerService.login(request);
+    }
+    
+    @GetMapping("/farmer/{id}")
+    public Farmer getFarmerById(@PathVariable int id) {
+        return farmerService.getFarmerById(id);
+    }
 }

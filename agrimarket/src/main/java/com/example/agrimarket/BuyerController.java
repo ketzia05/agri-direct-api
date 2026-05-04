@@ -1,31 +1,40 @@
 package com.example.agrimarket;
 
-import java.util.List;
-
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class BuyerController {
-	
-	private BuyerService service;
-	
-	public BuyerController(BuyerService service) {
-		this.service = service;
-	}
-	
-	@PostMapping("/buyer")
-	public String addB(@RequestBody Buyer b) {
-		return service.addBuyer(b);
-	}
-	
-	@GetMapping("/buyer")
-	public List<Buyer> getB(){
-		return service.getBuyer();
-	}
-	
-	@DeleteMapping("/buyer/delete/{name}")
-	public String delB(@PathVariable String name) {
-		return service.deleteBuyer(name);
-	}
-	
+
+    private BuyerService buyerService;
+
+    public BuyerController(BuyerService buyerService) {
+        this.buyerService = buyerService;
+    }
+
+    // SIGNUP
+    @PostMapping("/buyer")
+    public String signup(@RequestBody Buyer buyer) {
+        return buyerService.signup(buyer);
+    }
+
+ // LOGIN
+    @PostMapping("/buyer/login")
+    public Buyer login(@RequestBody LoginRequest request) {
+        return buyerService.login(request);
+    }
+
+//    // WALLET RECHARGE
+//    @PutMapping("/buyer/recharge/{id}")
+//    public String rechargeWallet(@PathVariable int id,
+//                                 @RequestBody RechargeRequest request) {
+//
+//        return buyerService.rechargeWallet(id, request.getAmount());
+//    }
+
+    // GET BUYER DETAILS
+    @GetMapping("/buyer/{id}")
+    public Buyer getBuyer(@PathVariable int id) {
+        return buyerService.getBuyerById(id);
+    }
 }

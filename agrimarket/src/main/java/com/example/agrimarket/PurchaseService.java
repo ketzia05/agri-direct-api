@@ -40,12 +40,12 @@ public class PurchaseService {
 		
 		int total = p.getPrice() * qty;
 
-		if (b.getBal() < total) {
+		if (b.getWallet() < total) {
 		    return "Insufficient balance";
 		}
 		
 		p.setQty(p.getQty() - qty);
-		b.setBal(b.getBal() - total);
+		b.setWallet(b.getWallet() - total);
 		
 		Transaction t = new Transaction();
 

@@ -1,11 +1,8 @@
 package com.example.agrimarket;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface BuyerRepository extends JpaRepository<Buyer, Integer>{
-	
-	Buyer findByName(String name);
-	
+public interface BuyerRepository extends JpaRepository<Buyer, Integer> {
+
+	Buyer findByUsername(String username);
 }
