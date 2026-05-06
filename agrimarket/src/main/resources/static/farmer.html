@@ -1,134 +1,941 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Farmer Dashboard - AgriMarket</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Farmer Dashboard — AgriMarket</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
     <style>
+        /* ─── VARIABLES ─────────────────────────────────── */
+        :root {
+            --cream:       #faf7f2;
+            --beige:       #f0ebe0;
+            --green-dark:  #1a3d2b;
+            --green-mid:   #2d6a4f;
+            --green-light: #52b788;
+            --gold:        #c9a84c;
+            --gold-light:  #f0d080;
+            --red:         #c0392b;
+            --red-light:   rgba(231,76,60,0.1);
+            --text-main:   #1c2b22;
+            --text-muted:  #6b7f6e;
+            --white:       #ffffff;
+            --card-shadow: 0 4px 24px rgba(26,61,43,0.09);
+            --card-hover:  0 12px 40px rgba(26,61,43,0.16);
+            --radius-lg:   18px;
+            --radius-md:   12px;
+            --radius-sm:   8px;
+            --transition:  all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: Arial;
-            margin: 0;
-            background: #f5f6fa;
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--cream);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 10% 0%, rgba(82,183,136,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 90% 100%, rgba(201,168,76,0.07) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ─── HEADER ────────────────────────────────────── */
         .header {
-            background: #2ecc71;
-            color: white;
-            padding: 15px 30px;
-            font-size: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(26,61,43,0.97);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(201,168,76,0.2);
+            padding: 0 40px;
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 24px rgba(0,0,0,0.18);
         }
 
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--green-light), var(--gold));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--white);
+            box-shadow: 0 2px 10px rgba(82,183,136,0.35);
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .logo-text span { color: var(--gold-light); }
+
+        .logo-sub {
+            font-size: 11px;
+            color: rgba(255,255,255,0.45);
+            font-weight: 400;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-top: 1px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-history {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 18px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.18);
+            color: var(--white);
+            border-radius: 50px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-history:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.35);
+            transform: translateY(-1px);
+        }
+
+        #walletBox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 20px;
+            background: linear-gradient(135deg, var(--gold), #a0782a);
+            border: none;
+            color: var(--white);
+            border-radius: 50px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 2px 12px rgba(201,168,76,0.4);
+        }
+
+        #walletBox:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(201,168,76,0.5);
+        }
+
+        /* ─── HERO ──────────────────────────────────────── */
+        .hero {
+            position: relative;
+            z-index: 1;
+            padding: 56px 40px 44px;
+            max-width: 1240px;
+            margin: 0 auto;
+        }
+
+        .hero-inner {
+            background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+            border-radius: 24px;
+            padding: 48px 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 32px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 8px 48px rgba(26,61,43,0.22);
+        }
+
+        .hero-inner::before {
+            content: '';
+            position: absolute;
+            top: -60px; right: -60px;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(82,183,136,0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-inner::after {
+            content: '';
+            position: absolute;
+            bottom: -40px; left: 30%;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-text { position: relative; z-index: 2; }
+
+        .hero-eyebrow {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold-light);
+            margin-bottom: 12px;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1.2;
+            margin-bottom: 14px;
+        }
+
+        .hero-subtitle {
+            font-size: 15px;
+            color: rgba(255,255,255,0.65);
+            max-width: 380px;
+            line-height: 1.6;
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
+        }
+
+        .badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.85);
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .hero-emoji {
+            font-size: 80px;
+            position: relative;
+            z-index: 2;
+            line-height: 1;
+            flex-shrink: 0;
+            filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* ─── CONTAINER ─────────────────────────────────── */
         .container {
-            padding: 20px;
+            position: relative;
+            z-index: 1;
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 40px 60px;
         }
 
-        input, select, button {
-            padding: 8px;
-            margin: 5px;
+        /* ─── SECTION HEADERS ───────────────────────────── */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 28px;
+            margin-top: 12px;
         }
 
+        .section-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .section-icon.green {
+            background: linear-gradient(135deg, var(--green-light), var(--green-mid));
+            color: var(--white);
+            box-shadow: 0 4px 14px rgba(82,183,136,0.3);
+        }
+
+        .section-icon.gold {
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            color: var(--white);
+            box-shadow: 0 4px 14px rgba(201,168,76,0.3);
+        }
+
+        .section-icon.blue {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: var(--white);
+            box-shadow: 0 4px 14px rgba(9,132,227,0.25);
+        }
+
+        .section-title-wrap h2, .section-title-wrap h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--green-dark);
+            line-height: 1.2;
+            margin: 0;
+        }
+
+        .section-title-wrap p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .section-divider {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, var(--beige), transparent);
+            margin-left: 10px;
+        }
+
+        /* ─── ADD PRODUCT FORM CARD ──────────────────────── */
+        .form-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 32px 36px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(26,61,43,0.06);
+            margin-bottom: 48px;
+            animation: fadeUp 0.4s ease both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .form-group input {
+            padding: 11px 14px;
+            border: 1.5px solid #e0ddd5;
+            border-radius: var(--radius-sm);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            color: var(--text-main);
+            background: var(--cream);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--green-light);
+            box-shadow: 0 0 0 3px rgba(82,183,136,0.12);
+            background: var(--white);
+        }
+
+        .form-group input::placeholder { color: #b0b8b2; }
+
+        .btn-add {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            padding: 13px 32px;
+            background: linear-gradient(135deg, var(--green-light), var(--green-mid));
+            border: none;
+            color: var(--white);
+            border-radius: var(--radius-md);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(45,106,79,0.25);
+            letter-spacing: 0.2px;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(45,106,79,0.35);
+        }
+
+        /* ─── MESSAGE BOX ───────────────────────────────── */
+        #msg {
+            margin: 16px 0 0;
+            padding: 12px 18px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        }
+
+        #msg:not(:empty) { display: flex; }
+
+        #msg.success {
+            background: rgba(82,183,136,0.12);
+            border: 1px solid rgba(82,183,136,0.3);
+            color: var(--green-mid);
+        }
+
+        #msg.error {
+            background: var(--red-light);
+            border: 1px solid rgba(231,76,60,0.2);
+            color: var(--red);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-12px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ─── PRODUCT GRID ──────────────────────────────── */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 22px;
         }
 
+        /* ─── PRODUCT CARD ──────────────────────────────── */
         .card {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(26,61,43,0.06);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            animation: fadeUp 0.5s ease both;
         }
 
-        .message {
-            margin-top: 15px;
-            font-weight: bold;
+        .card:hover {
+            box-shadow: var(--card-hover);
+            transform: translateY(-4px);
+            border-color: rgba(82,183,136,0.2);
+        }
+
+        .card-top {
+            background: linear-gradient(135deg, var(--beige), #e8e2d4);
+            padding: 20px 22px 16px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .product-emoji { font-size: 38px; line-height: 1; }
+
+        .card-body {
+            padding: 16px 22px 0;
+            flex: 1;
+        }
+
+        .prod-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--green-dark);
+            margin-bottom: 12px;
+        }
+
+        .price-row {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .price-chip {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .price-chip .label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .price-chip .value {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .price-chip.cost .value { color: var(--red); }
+        .price-chip.sell .value { color: var(--green-mid); }
+
+        .stock-row {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 13px;
+            color: var(--text-muted);
+            padding: 10px 0;
+            border-top: 1px solid var(--beige);
+        }
+
+        .stock-row i { color: var(--green-light); font-size: 12px; }
+
+        /* ─── EDIT FIELDS IN CARD ────────────────────────── */
+        .card-edit {
+            padding: 14px 22px;
+            background: var(--cream);
+            border-top: 1px solid var(--beige);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .edit-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .edit-row input {
+            flex: 1;
+            padding: 9px 12px;
+            border: 1.5px solid #e0ddd5;
+            border-radius: var(--radius-sm);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            color: var(--text-main);
+            background: var(--white);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .edit-row input:focus {
+            border-color: var(--green-light);
+            box-shadow: 0 0 0 3px rgba(82,183,136,0.1);
+        }
+
+        .edit-row input::placeholder { color: #b0b8b2; font-size: 12px; }
+
+        .btn-sm {
+            padding: 9px 14px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .btn-update {
+            background: linear-gradient(135deg, var(--green-light), var(--green-mid));
+            color: var(--white);
+            box-shadow: 0 2px 8px rgba(45,106,79,0.2);
+        }
+
+        .btn-update:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(45,106,79,0.3);
+        }
+
+        .btn-delete {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 16px;
+            background: var(--red-light);
+            border: 1px solid rgba(231,76,60,0.2);
+            color: var(--red);
+            border-radius: var(--radius-sm);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            margin: 2px 0 14px;
+        }
+
+        .btn-delete:hover {
+            background: rgba(231,76,60,0.18);
+            transform: translateY(-1px);
+        }
+
+        /* ─── SALES SECTION ─────────────────────────────── */
+        .sales-section {
+            margin-top: 52px;
+            padding-top: 40px;
+            border-top: 2px dashed rgba(26,61,43,0.08);
+        }
+
+        .earnings-banner {
+            background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+            border-radius: var(--radius-lg);
+            padding: 24px 32px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 28px;
+            box-shadow: 0 4px 24px rgba(26,61,43,0.2);
+            animation: fadeUp 0.4s ease both;
+        }
+
+        .earnings-icon {
+            width: 52px; height: 52px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--gold-light);
+            flex-shrink: 0;
+        }
+
+        .earnings-text .label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .earnings-text .amount {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--white);
+            margin-top: 2px;
+        }
+
+        /* Sales cards */
+        #salesHistory .card .card-top {
+            background: linear-gradient(135deg, #f5f0e8, #ede5d4);
+        }
+
+        .sale-detail {
+            font-size: 13px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .sale-detail i { color: var(--gold); font-size: 11px; }
+
+        /* ─── EMPTY STATE ───────────────────────────────── */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: #c8d8c8;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        /* ─── FOOTER ────────────────────────────────────── */
+        .footer {
+            text-align: center;
+            padding: 28px 20px;
+            color: var(--text-muted);
+            font-size: 13px;
+            border-top: 1px solid var(--beige);
+            margin-top: 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer span { color: var(--green-light); font-weight: 600; }
+
+        /* ─── CARD STAGGER ──────────────────────────────── */
+        .card:nth-child(1) { animation-delay: 0.05s; }
+        .card:nth-child(2) { animation-delay: 0.10s; }
+        .card:nth-child(3) { animation-delay: 0.15s; }
+        .card:nth-child(4) { animation-delay: 0.20s; }
+        .card:nth-child(5) { animation-delay: 0.25s; }
+        .card:nth-child(6) { animation-delay: 0.30s; }
+
+        /* ─── RESPONSIVE ────────────────────────────────── */
+        @media (max-width: 768px) {
+            .header { padding: 0 20px; }
+            .hero { padding: 24px 20px 20px; }
+            .hero-inner { padding: 32px 28px; flex-direction: column; }
+            .hero-title { font-size: 26px; }
+            .hero-emoji { font-size: 60px; }
+            .container { padding: 0 20px 40px; }
+            .form-card { padding: 22px 20px; }
+            .grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+            .section-divider { display: none; }
+        }
+
+        @media (max-width: 480px) {
+            .grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 
 <body>
 
-<div class="header">Farmer Dashboard</div>
+<!-- ─── HEADER ─────────────────────────────────────── -->
+<header class="header">
+    <div class="header-logo">
+        <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+        <div>
+            <div class="logo-text">Agri<span>Market</span></div>
+            <div class="logo-sub">Farmer Dashboard</div>
+        </div>
+    </div>
+    <div class="header-actions">
+        <button class="btn-history" onclick="viewFarmerHistory()">
+            <i class="fa-solid fa-chart-line"></i> My Sales
+        </button>
+        <button id="walletBox" onclick="rechargeWallet()">
+            <i class="fa-solid fa-wallet"></i> Wallet: Rs. 0
+        </button>
+    </div>
+</header>
 
+<!-- ─── HERO ───────────────────────────────────────── -->
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-text">
+            <div class="hero-eyebrow">🌾 Farmer Command Centre</div>
+            <h1 class="hero-title">Manage Your<br>Farm & Produce</h1>
+            <p class="hero-subtitle">List fresh products, update stock in real-time, track earnings, and grow your farm business — all in one place.</p>
+            <div class="hero-badges">
+                <span class="badge"><i class="fa-solid fa-plus-circle"></i> Add Products</span>
+                <span class="badge"><i class="fa-solid fa-arrow-trend-up"></i> Track Sales</span>
+                <span class="badge"><i class="fa-solid fa-wallet"></i> Manage Wallet</span>
+            </div>
+        </div>
+        <div class="hero-emoji">🧑‍🌾</div>
+    </div>
+</section>
+
+<!-- ─── MAIN CONTAINER ─────────────────────────────── -->
 <div class="container">
 
-    <!-- Farmer Selection -->
-    <h3>Select Farmer</h3>
-    <select id="farmerId"></select>
-	<button onclick="viewFarmerHistory()">See My Sales</button>
-
     <!-- Add Product -->
-    <h3>Add Product</h3>
-    <input type="text" id="name" placeholder="Product Name">
-    <input type="number" id="price" placeholder="Price">
-    <input type="number" id="qty" placeholder="Quantity">
-    <button onclick="addProduct()">Add</button>
+    <div class="section-header">
+        <div class="section-icon blue"><i class="fa-solid fa-plus"></i></div>
+        <div class="section-title-wrap">
+            <h2>Add New Product</h2>
+            <p>List a new item for buyers on the marketplace</p>
+        </div>
+        <div class="section-divider"></div>
+    </div>
 
-    <div id="msg" class="message"></div>
+    <div class="form-card">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Product Name</label>
+                <input type="text" id="name" placeholder="e.g. Tomatoes">
+            </div>
+            <div class="form-group">
+                <label>Cost Price (₹)</label>
+                <input type="number" id="costPrice" placeholder="e.g. 20">
+            </div>
+            <div class="form-group">
+                <label>Selling Price (₹)</label>
+                <input type="number" id="price" placeholder="e.g. 35">
+            </div>
+            <div class="form-group">
+                <label>Quantity (units)</label>
+                <input type="number" id="qty" placeholder="e.g. 100">
+            </div>
+        </div>
+        <button class="btn-add" onclick="addProduct()">
+            <i class="fa-solid fa-circle-plus"></i> Add Product to Market
+        </button>
+        <div id="msg" class="message"></div>
+    </div>
 
-    <!-- Product List -->
-    <h3>My Products</h3>
+    <!-- My Products -->
+    <div class="section-header">
+        <div class="section-icon green"><i class="fa-solid fa-store"></i></div>
+        <div class="section-title-wrap">
+            <h2>My Products</h2>
+            <p>Manage your listed produce and stock levels</p>
+        </div>
+        <div class="section-divider"></div>
+    </div>
+
     <div id="productList" class="grid"></div>
-	
-	<h2>My Sales History</h2>
-	<div id="salesHistory" class="grid"></div>
+
+    <!-- Sales History -->
+    <div class="sales-section">
+        <div class="section-header">
+            <div class="section-icon gold"><i class="fa-solid fa-receipt"></i></div>
+            <div class="section-title-wrap">
+                <h2>My Sales History</h2>
+                <p>All completed transactions and earnings</p>
+            </div>
+            <div class="section-divider"></div>
+        </div>
+
+        <div id="salesHistory" class="grid"></div>
+    </div>
 
 </div>
 
+<!-- ─── FOOTER ─────────────────────────────────────── -->
+<footer class="footer">
+    <p>© 2025 <span>AgriMarket</span> · Empowering Farmers Across India 🌿</p>
+</footer>
+
+
 <script>
 
-    // LOAD FARMERS
-    function loadFarmers() {
-        fetch("http://localhost:8080/farmers")
-        .then(res => res.json())
-        .then(data => {
-            let dropdown = document.getElementById("farmerId");
-            dropdown.innerHTML = `<option value="">Select Farmer</option>`;
-
-            data.forEach(f => {
-                let option = document.createElement("option");
-                option.value = f.id;
-                option.text = f.name;
-                dropdown.appendChild(option);
-            });
-        });
+    /* ─── EMOJI MAP ─────────────────────────────────────── */
+    function getEmoji(name) {
+        if (!name) return '🌾';
+        const n = name.toLowerCase();
+        if (n.includes('rice') || n.includes('paddy')) return '🌾';
+        if (n.includes('wheat')) return '🌾';
+        if (n.includes('tomato')) return '🍅';
+        if (n.includes('potato')) return '🥔';
+        if (n.includes('onion')) return '🧅';
+        if (n.includes('corn') || n.includes('maize')) return '🌽';
+        if (n.includes('mango')) return '🥭';
+        if (n.includes('banana')) return '🍌';
+        if (n.includes('apple')) return '🍎';
+        if (n.includes('carrot')) return '🥕';
+        if (n.includes('milk') || n.includes('dairy')) return '🥛';
+        if (n.includes('egg')) return '🥚';
+        if (n.includes('chilli') || n.includes('chili')) return '🌶️';
+        if (n.includes('brinjal') || n.includes('eggplant')) return '🍆';
+        if (n.includes('cabbage')) return '🥬';
+        if (n.includes('spinach') || n.includes('green')) return '🥦';
+        if (n.includes('lemon') || n.includes('lime')) return '🍋';
+        if (n.includes('coconut')) return '🥥';
+        if (n.includes('peanut') || n.includes('groundnut')) return '🥜';
+        return '🌱';
     }
 
-    // LOAD PRODUCTS (FILTER BY FARMER)
+    /* ─── LOAD PRODUCTS ─────────────────────────────────── */
     function loadProducts() {
-
-        let farmerId = document.getElementById("farmerId").value;
+        let farmerId = localStorage.getItem("farmerId");
         if (!farmerId) return;
 
         fetch("http://localhost:8080/products")
         .then(res => res.json())
         .then(data => {
-
             let container = document.getElementById("productList");
             container.innerHTML = "";
 
             let myProducts = data.filter(p => p.farmer.id == farmerId);
 
             if (myProducts.length === 0) {
-                container.innerHTML = "<p>No products</p>";
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-box-open"></i>
+                        <p>No products listed yet. Add your first product above!</p>
+                    </div>`;
                 return;
             }
 
             myProducts.forEach(p => {
                 let card = document.createElement("div");
                 card.className = "card";
+                const emoji = getEmoji(p.name);
 
                 card.innerHTML = `
-                    <div><b>${p.name}</b></div>
-                    <div>Price: ₹${p.price}</div>
-                    <div>Stock: ${p.qty}</div>
-
-                    <input type="number" id="updateQty${p.id}" placeholder="New Qty">
-					<input type="number" id="updatePrice${p.id}" placeholder="New Price">
-                    <button onclick="updateQty(${p.id})">Update</button>
-					<button onclick="updatePrice(${p.id})">Update Price</button>
-                    <button onclick="deleteProduct(${p.id})">Delete</button>
+                    <div class="card-top">
+                        <div class="product-emoji">${emoji}</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="prod-name">${p.name}</div>
+                        <div class="price-row">
+                            <div class="price-chip cost">
+                                <span class="label">Cost</span>
+                                <span class="value">₹${p.costPrice}</span>
+                            </div>
+                            <div class="price-chip sell">
+                                <span class="label">Selling</span>
+                                <span class="value">₹${p.price}</span>
+                            </div>
+                        </div>
+                        <div class="stock-row">
+                            <i class="fa-solid fa-cubes"></i>
+                            Stock: <strong>${p.qty}</strong> units
+                        </div>
+                    </div>
+                    <div class="card-edit">
+                        <div class="edit-row">
+                            <input type="number" id="updateQty${p.id}" placeholder="New quantity">
+                            <button class="btn-sm btn-update" onclick="updateQty(${p.id})">
+                                <i class="fa-solid fa-boxes-stacked"></i> Qty
+                            </button>
+                        </div>
+                        <div class="edit-row">
+                            <input type="number" id="updatePrice${p.id}" placeholder="New price (₹)">
+                            <button class="btn-sm btn-update" onclick="updatePrice(${p.id})">
+                                <i class="fa-solid fa-tag"></i> Price
+                            </button>
+                        </div>
+                        <button class="btn-delete" onclick="deleteProduct(${p.id})">
+                            <i class="fa-solid fa-trash"></i> Remove Product
+                        </button>
+                    </div>
                 `;
 
                 container.appendChild(card);
@@ -136,26 +943,27 @@
         });
     }
 
-    // ADD PRODUCT
+    /* ─── ADD PRODUCT ───────────────────────────────────── */
     function addProduct() {
+        let farmerId = localStorage.getItem("farmerId");
+        console.log("Farmer ID:", farmerId);
 
-        let farmerId = document.getElementById("farmerId").value;
-        let name = document.getElementById("name").value;
-        let price = document.getElementById("price").value;
-        let qty = document.getElementById("qty").value;
+        let name      = document.getElementById("name").value;
+        let costPrice = document.getElementById("costPrice").value;
+        let price     = document.getElementById("price").value;
+        let qty       = document.getElementById("qty").value;
 
-        if (!farmerId || !name || !price || !qty) {
+        if (!farmerId || !name || !costPrice || !price || !qty) {
             showMsg("All fields required", false);
             return;
         }
 
         fetch(`http://localhost:8080/products?farmerId=${farmerId}`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 name: name,
+                costPrice: parseInt(costPrice),
                 price: parseInt(price),
                 qty: parseInt(qty)
             })
@@ -164,12 +972,15 @@
         .then(msg => {
             showMsg(msg, true);
             loadProducts();
+        })
+        .catch(err => {
+            console.error(err);
+            showMsg("Add product failed", false);
         });
     }
 
-    // UPDATE QUANTITY
+    /* ─── UPDATE QUANTITY ───────────────────────────────── */
     function updateQty(productId) {
-
         let newQty = document.getElementById("updateQty" + productId).value;
 
         if (!newQty || newQty < 0) {
@@ -179,12 +990,8 @@
 
         fetch(`http://localhost:8080/products/${productId}`, {
             method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                qty: parseInt(newQty)
-            })
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ qty: parseInt(newQty) })
         })
         .then(res => res.text())
         .then(msg => {
@@ -192,38 +999,20 @@
             loadProducts();
         });
     }
-	
-	// UPDATE PRICE
-	function updatePrice(productId) {
 
-	        let newPrice = document.getElementById("updatePrice" + productId).value;
+    /* ─── UPDATE PRICE ──────────────────────────────────── */
+    function updatePrice(productId) {
+        let newPrice = document.getElementById("updatePrice" + productId).value;
 
-	        if (!newPrice || newPrice < 0) {
-	            showMsg("Invalid quantity", false);
-	            return;
-	        }
-
-	        fetch(`http://localhost:8080/products/${productId}`, {
-	            method: "PUT",
-	            headers: {
-	                "Content-Type": "application/json"
-	            },
-	            body: JSON.stringify({
-	                price: parseInt(newPrice)
-	            })
-	        })
-	        .then(res => res.text())
-	        .then(msg => {
-	            showMsg(msg, true);
-	            loadProducts();
-	        });
-	    }
-
-    // DELETE PRODUCT
-    function deleteProduct(productId) {
+        if (!newPrice || newPrice < 0) {
+            showMsg("Invalid price", false);
+            return;
+        }
 
         fetch(`http://localhost:8080/products/${productId}`, {
-            method: "DELETE"
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ price: parseInt(newPrice) })
         })
         .then(res => res.text())
         .then(msg => {
@@ -232,74 +1021,130 @@
         });
     }
 
-    // MESSAGE HANDLER
-    function showMsg(msg, success) {
-        let box = document.getElementById("msg");
-        box.innerText = msg;
-        box.style.color = success ? "green" : "red";
+    /* ─── DELETE PRODUCT ────────────────────────────────── */
+    function deleteProduct(productId) {
+        fetch(`http://localhost:8080/products/${productId}`, { method: "DELETE" })
+        .then(res => res.text())
+        .then(msg => {
+            showMsg(msg, true);
+            loadProducts();
+        });
     }
 
-    // EVENTS
-    document.getElementById("farmerId").addEventListener("change", loadProducts);
+    /* ─── LOAD FARMER WALLET ────────────────────────────── */
+    function loadFarmerWallet() {
+        let farmerId = localStorage.getItem("farmerId");
 
-	function viewFarmerHistory() {
+        if (!farmerId) {
+            alert("Please login first");
+            window.location.href = "login.html";
+            return;
+        }
 
-	    let farmerId = document.getElementById("farmerId").value;
+        fetch(`http://localhost:8080/farmer/${farmerId}`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("walletBox").innerHTML =
+                `<i class="fa-solid fa-wallet"></i> Wallet: Rs. ${data.wallet}`;
+        });
+    }
 
-	    if (!farmerId) {
-	        alert("Please select Farmer");
-	        return;
-	    }
+    /* ─── VIEW FARMER HISTORY ───────────────────────────── */
+    function viewFarmerHistory() {
+        let farmerId = localStorage.getItem("farmerId");
 
-	    fetch(`http://localhost:8080/transactions/farmer/${farmerId}`)
-	    .then(res => {
-	        if (!res.ok) throw new Error("Farmer history failed");
-	        return res.json();
-	    })
-	    .then(data => {
+        if (!farmerId) {
+            alert("Please select Farmer");
+            return;
+        }
 
-	        let container = document.getElementById("salesHistory");
-	        container.innerHTML = "";
+        fetch(`http://localhost:8080/transactions/farmer/${farmerId}`)
+        .then(res => {
+            if (!res.ok) throw new Error("Farmer history failed");
+            return res.json();
+        })
+        .then(data => {
+            let container = document.getElementById("salesHistory");
+            container.innerHTML = "";
 
-	        if (!data || data.length === 0) {
-	            container.innerHTML = "<p>No sales history found</p>";
-	            return;
-	        }
+            if (!data || data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-chart-bar"></i>
+                        <p>No sales history yet. Keep listing products!</p>
+                    </div>`;
+                return;
+            }
 
-			let totalEarned = data.reduce((sum, t) => sum + t.totalPrice, 0);
+            let totalEarned = data.reduce((sum, t) => sum + t.totalPrice, 0);
 
-			container.innerHTML = `<h3>Total Earnings: Rs. ${totalEarned}</h3>`;
-				
-	        data.forEach(t => {
+            // Earnings banner
+            let banner = document.createElement("div");
+            banner.className = "earnings-banner";
+            banner.style.gridColumn = "1 / -1";
+            banner.innerHTML = `
+                <div class="earnings-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+                <div class="earnings-text">
+                    <div class="label">Total Earnings</div>
+                    <div class="amount">Rs. ${totalEarned.toLocaleString()}</div>
+                </div>
+            `;
+            container.appendChild(banner);
 
-	            let card = document.createElement("div");
-	            card.className = "card";
+            data.forEach(t => {
+                let card = document.createElement("div");
+                card.className = "card";
+                const emoji = getEmoji(t.product?.name);
 
-	            card.innerHTML = `
-	                <div class="name">${t.product?.name || "Unknown Product"}</div>
-	                <div class="qty">Sold Qty: ${t.qty}</div>
-	                <div class="price">Earned: Rs. ${t.totalPrice}</div>
-	                <div>Buyer: ${t.buyer?.name || "Unknown Buyer"}</div>
-	                <div>Date: ${t.purchaseDate}</div>
-	            `;
+                card.innerHTML = `
+                    <div class="card-top">
+                        <div class="product-emoji">${emoji}</div>
+                        <span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:50px;background:rgba(201,168,76,0.15);color:#9a7a30;border:1px solid rgba(201,168,76,0.25);">
+                            ● Sold
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="prod-name">${t.product?.name || "Unknown Product"}</div>
+                        <div class="price-chip sell" style="margin-bottom:10px;">
+                            <span class="label">Earned</span>
+                            <span class="value" style="font-size:20px;">Rs. ${t.totalPrice}</span>
+                        </div>
+                        <div class="stock-row">
+                            <i class="fa-solid fa-cubes"></i>
+                            Qty sold: <strong>${t.qty}</strong>
+                        </div>
+                        <div class="sale-detail"><i class="fa-solid fa-person"></i> ${t.buyer?.name || "Unknown Buyer"}</div>
+                        <div class="sale-detail" style="margin-bottom:14px;"><i class="fa-regular fa-calendar"></i> ${t.purchaseDate}</div>
+                    </div>
+                `;
 
-	            container.appendChild(card);
-	        });
+                container.appendChild(card);
+            });
 
-	        document.getElementById("salesHistory").scrollIntoView({
-	            behavior: "smooth"
-	        });
+            document.getElementById("salesHistory").scrollIntoView({ behavior: "smooth" });
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById("salesHistory").innerHTML =
+                `<div class="empty-state">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <p>Failed to load sales history.</p>
+                </div>`;
+        });
+    }
 
-	    })
-	    .catch(err => {
-	        console.error(err);
-	        document.getElementById("salesHistory").innerHTML =
-	            "<p>Failed to load sales history</p>";
-	    });
-	}
-	
-    // INITIAL LOAD
-    loadFarmers();
+    /* ─── SHOW MESSAGE ──────────────────────────────────── */
+    function showMsg(msg, success) {
+        let box = document.getElementById("msg");
+        box.className = "message " + (success ? "success" : "error");
+        box.innerHTML = success
+            ? `<i class="fa-solid fa-circle-check"></i> ${msg}`
+            : `<i class="fa-solid fa-circle-xmark"></i> ${msg}`;
+    }
+
+    /* ─── INITIAL LOAD ──────────────────────────────────── */
+    loadFarmerWallet();
+    loadProducts();
 
 </script>
 

@@ -42,24 +42,24 @@ public class BuyerService {
 
     
 //    // WALLET RECHARGE
-//    public String rechargeWallet(int buyerId, int amount) {
-//
-//        Buyer buyer = buyerRepo.findById(buyerId).orElse(null);
-//
-//        if (buyer == null) {
-//            return "Buyer not found";
-//        }
-//
-//        if (amount <= 0) {
-//            return "Invalid recharge amount";
-//        }
-//
-//        buyer.setWallet(buyer.getWallet() + amount);
-//
-//        buyerRepo.save(buyer);
-//
-//        return "Wallet recharged successfully";
-//    }
+    public String rechargeWallet(int buyerId, int amount) {
+
+        Buyer buyer = buyerRepo.findById(buyerId).orElse(null);
+
+        if (buyer == null) {
+            return "Buyer not found";
+        }
+
+        if (amount <= 0) {
+            return "Invalid recharge amount";
+        }
+
+        buyer.setWallet(buyer.getWallet() + amount);
+
+        buyerRepo.save(buyer);
+
+        return "Wallet recharged successfully";
+    }
 
     
     // GET BUYER BY ID

@@ -24,13 +24,13 @@ public class BuyerController {
         return buyerService.login(request);
     }
 
-//    // WALLET RECHARGE
-//    @PutMapping("/buyer/recharge/{id}")
-//    public String rechargeWallet(@PathVariable int id,
-//                                 @RequestBody RechargeRequest request) {
-//
-//        return buyerService.rechargeWallet(id, request.getAmount());
-//    }
+// WALLET RECHARGE
+    @PutMapping("/buyer/recharge/{id}")
+    public String rechargeWallet(@PathVariable int id,
+                                 @RequestBody RechargeRequest request) {
+
+        return buyerService.rechargeWallet(id, request.getAmount());
+    }
 
     // GET BUYER DETAILS
     @GetMapping("/buyer/{id}")

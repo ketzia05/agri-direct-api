@@ -1,313 +1,976 @@
 <!DOCTYPE html>
-<html>
-	<head>
-	    <title>AgriMarket</title>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>AgriMarket — Farm Fresh Marketplace</title>
 
-	<style>
-	    body {
-	        font-family: Arial, sans-serif;
-	        margin: 0;
-	        background-color: #f5f6fa;
-	    }
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
-	    .header {
-	        background-color: #2ecc71;
-	        color: white;
-	        padding: 15px 30px;
-	        display: flex;
-	        align-items: center;
-	        font-size: 20px;
-	        font-weight: bold;
-	    }
+    <style>
+        /* ─── VARIABLES ─────────────────────────────────── */
+        :root {
+            --cream:       #faf7f2;
+            --beige:       #f0ebe0;
+            --green-dark:  #1a3d2b;
+            --green-mid:   #2d6a4f;
+            --green-light: #52b788;
+            --gold:        #c9a84c;
+            --gold-light:  #f0d080;
+            --text-main:   #1c2b22;
+            --text-muted:  #6b7f6e;
+            --white:       #ffffff;
+            --card-shadow: 0 4px 24px rgba(26,61,43,0.09);
+            --card-hover:  0 12px 40px rgba(26,61,43,0.16);
+            --radius-lg:   18px;
+            --radius-md:   12px;
+            --radius-sm:   8px;
+            --transition:  all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
 
-	    .container {
-	        padding: 20px;
-	    }
+        /* ─── RESET & BASE ──────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-	    h2 {
-	        margin-bottom: 20px;
-	    }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--cream);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-	    /* Buyer input */
-	    .buyer-box {
-	        margin-bottom: 20px;
-	    }
+        /* ─── ANIMATED BACKGROUND ───────────────────────── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 10% 0%, rgba(82,183,136,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 90% 100%, rgba(201,168,76,0.07) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
 
-	    input {
-	        padding: 8px;
-	        margin-right: 10px;
-	    }
+        /* ─── HEADER / NAV ──────────────────────────────── */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(26,61,43,0.97);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(201,168,76,0.2);
+            padding: 0 40px;
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 24px rgba(0,0,0,0.18);
+        }
 
-	    /* Grid */
-	    .grid {
-	        display: grid;
-	        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-	        gap: 20px;
-	    }
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
 
-	    /* Card */
-	    .card {
-	        background: white;
-	        padding: 20px;
-	        border-radius: 10px;
-	        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-	    }
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--green-light), var(--gold));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--white);
+            flex-shrink: 0;
+            box-shadow: 0 2px 10px rgba(82,183,136,0.35);
+        }
 
-	    .name {
-	        font-size: 18px;
-	        font-weight: bold;
-	    }
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: 0.3px;
+        }
 
-	    .price {
-	        color: #27ae60;
-	        margin-top: 10px;
-	    }
+        .logo-text span {
+            color: var(--gold-light);
+        }
 
-	    .qty {
-	        color: #555;
-	        margin-top: 5px;
-	    }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-	    .farmer {
-	        margin-top: 5px;
-	        font-size: 14px;
-	        color: #777;
-	    }
+        /* ─── HEADER BUTTONS ────────────────────────────── */
+        .btn-history {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 18px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.18);
+            color: var(--white);
+            border-radius: 50px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.2px;
+        }
 
-	    button {
-	        margin-top: 15px;
-	        padding: 8px 12px;
-	        background: #2ecc71;
-	        border: none;
-	        color: white;
-	        border-radius: 5px;
-	        cursor: pointer;
-	    }
+        .btn-history:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.35);
+            transform: translateY(-1px);
+        }
 
-	    button:hover {
-	        background: #27ae60;
-	    }
+        #walletBox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 20px;
+            background: linear-gradient(135deg, var(--gold) 0%, #a0782a 100%);
+            border: none;
+            color: var(--white);
+            border-radius: 50px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 2px 12px rgba(201,168,76,0.4);
+            letter-spacing: 0.2px;
+        }
 
-	    .message {
-	        margin-top: 20px;
-	        font-weight: bold;
-	    }
-	</style>
+        #walletBox:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(201,168,76,0.5);
+            background: linear-gradient(135deg, #d4b05a 0%, var(--gold) 100%);
+        }
 
-	</head>
+        /* ─── HERO BANNER ───────────────────────────────── */
+        .hero {
+            position: relative;
+            z-index: 1;
+            padding: 56px 40px 44px;
+            max-width: 1240px;
+            margin: 0 auto;
+        }
 
-	<body>
+        .hero-inner {
+            background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+            border-radius: 24px;
+            padding: 48px 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 32px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 8px 48px rgba(26,61,43,0.22);
+        }
 
-	<div class="header">AgriMarket</div>
+        .hero-inner::before {
+            content: '';
+            position: absolute;
+            top: -60px; right: -60px;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(82,183,136,0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
 
-	<div class="container">
+        .hero-inner::after {
+            content: '';
+            position: absolute;
+            bottom: -40px; left: 30%;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+        }
 
-	    <h2>Available Products</h2>
+        .hero-text {
+            position: relative;
+            z-index: 2;
+        }
 
-	    <!-- Buyer Input -->
-	    <div class="buyer-box">
-			<div class="buyer-box">
-			    <label>Select Buyer:</label>
-			    <select id="buyerId">
-			        <option value="">-- Select Buyer --</option>
-			    </select>
-				<button onclick="viewBuyerHistory()">See My History</button>
-			</div>
-	    </div>
+        .hero-eyebrow {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold-light);
+            margin-bottom: 12px;
+            opacity: 0.9;
+        }
 
-	    <!-- Products -->
-	    <div id="productList" class="grid"></div>
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1.2;
+            margin-bottom: 14px;
+        }
 
-	    <!-- Message -->
-	    <div id="msg" class="message"></div>
-		<h2>My Purchase History</h2>
-		<div id="historyList" class="grid"></div>
+        .hero-subtitle {
+            font-size: 15px;
+            color: rgba(255,255,255,0.65);
+            font-weight: 400;
+            max-width: 380px;
+            line-height: 1.6;
+        }
 
-	</div>
+        .hero-badges {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
+        }
 
-	<script>
+        .badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.85);
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 500;
+        }
 
-	    // LOAD PRODUCTS
-	    function loadProducts() {
-	        fetch("http://localhost:8080/products")
-	        .then(res => {
-	            if (!res.ok) throw new Error("API failed");
-	            return res.json();
-	        })
-	        .then(data => {
+        .hero-emoji {
+            font-size: 80px;
+            position: relative;
+            z-index: 2;
+            line-height: 1;
+            filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
+            flex-shrink: 0;
+            animation: float 4s ease-in-out infinite;
+        }
 
-	            let container = document.getElementById("productList");
-	            container.innerHTML = "";
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
 
-	            if (!data || data.length === 0) {
-	                container.innerHTML = "<p>No products available</p>";
-	                return;
-	            }
+        /* ─── MAIN CONTAINER ────────────────────────────── */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 40px 60px;
+        }
 
-	            data.forEach(p => {
-	                let card = document.createElement("div");
-	                card.className = "card";
+        /* ─── SECTION HEADERS ───────────────────────────── */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 28px;
+            margin-top: 12px;
+        }
 
-	                card.innerHTML = `
-	                    <div class="name">${p.name}</div>
-	                    <div class="price">Rs. ${p.price}</div>
-	                    <div class="qty">Stock: ${p.qty}</div>
-	                    <div class="farmer">Farmer: ${p.farmer?.name || "Unknown"}</div>
+        .section-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
 
-	                    <button 
-	                        onclick="buyProduct(${p.id})"
-	                        ${p.qty === 0 ? "disabled" : ""}
-	                    >
-	                        ${p.qty === 0 ? "Out of Stock" : "Buy"}
-	                    </button>
-	                `;
+        .section-icon.green {
+            background: linear-gradient(135deg, var(--green-light), var(--green-mid));
+            color: var(--white);
+            box-shadow: 0 4px 14px rgba(82,183,136,0.3);
+        }
 
-	                container.appendChild(card);
-	            });
-	        })
-	        .catch(err => {
-	            console.error(err);
-	            document.getElementById("productList").innerHTML =
-	                "<p>Failed to load products</p>";
-	        });
-	    }
+        .section-icon.gold {
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            color: var(--white);
+            box-shadow: 0 4px 14px rgba(201,168,76,0.3);
+        }
+
+        .section-title-wrap h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--green-dark);
+            line-height: 1.2;
+            margin: 0;
+        }
+
+        .section-title-wrap p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .section-divider {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, var(--beige), transparent);
+            margin-left: 10px;
+        }
+
+        /* ─── PRODUCT GRID ──────────────────────────────── */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 22px;
+        }
+
+        /* ─── PRODUCT CARD ──────────────────────────────── */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 0;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(26,61,43,0.06);
+            transition: var(--transition);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: fadeUp 0.5s ease both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .card:hover {
+            box-shadow: var(--card-hover);
+            transform: translateY(-5px);
+            border-color: rgba(82,183,136,0.2);
+        }
+
+        .card-top {
+            background: linear-gradient(135deg, var(--beige) 0%, #e8e2d4 100%);
+            padding: 22px 22px 18px;
+            position: relative;
+            min-height: 90px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .product-emoji {
+            font-size: 40px;
+            line-height: 1;
+        }
+
+        .stock-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 50px;
+            letter-spacing: 0.5px;
+        }
+
+        .stock-badge.in-stock {
+            background: rgba(82,183,136,0.15);
+            color: var(--green-mid);
+            border: 1px solid rgba(82,183,136,0.25);
+        }
+
+        .stock-badge.out-stock {
+            background: rgba(231,76,60,0.1);
+            color: #c0392b;
+            border: 1px solid rgba(231,76,60,0.2);
+        }
+
+        .card-body {
+            padding: 18px 22px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .name {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--green-dark);
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .price {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--green-mid);
+            margin-bottom: 6px;
+        }
+
+        .price-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .card-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-top: 10px;
+            padding-top: 12px;
+            border-top: 1px solid var(--beige);
+        }
+
+        .meta-row {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .meta-row i {
+            width: 14px;
+            color: var(--green-light);
+            font-size: 12px;
+        }
+
+        .qty { color: var(--text-muted); }
+        .farmer { color: var(--text-muted); }
+
+        /* ─── BUY BUTTON ────────────────────────────────── */
+        .card-footer {
+            padding: 0 22px 20px;
+        }
+
+        .btn-buy {
+            width: 100%;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, var(--green-light) 0%, var(--green-mid) 100%);
+            border: none;
+            color: var(--white);
+            border-radius: var(--radius-md);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 14px rgba(45,106,79,0.25);
+        }
+
+        .btn-buy:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(45,106,79,0.35);
+            background: linear-gradient(135deg, #5cc491, #33785a);
+        }
+
+        .btn-buy:disabled {
+            background: linear-gradient(135deg, #ccc, #bbb);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* ─── MESSAGE BOX ───────────────────────────────── */
+        #msg {
+            margin: 20px 0;
+            padding: 14px 20px;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            font-size: 14px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        }
+
+        #msg:not(:empty) {
+            display: flex;
+        }
+
+        #msg.success {
+            background: rgba(82,183,136,0.12);
+            border: 1px solid rgba(82,183,136,0.3);
+            color: var(--green-mid);
+        }
+
+        #msg.error {
+            background: rgba(231,76,60,0.08);
+            border: 1px solid rgba(231,76,60,0.2);
+            color: #c0392b;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-12px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ─── HISTORY SECTION ───────────────────────────── */
+        .history-section {
+            margin-top: 52px;
+            padding-top: 40px;
+            border-top: 2px dashed rgba(26,61,43,0.08);
+        }
+
+        /* History cards use same .card + overrides */
+        #historyList .card .card-top {
+            background: linear-gradient(135deg, #f5f0e8, #ede5d4);
+        }
+
+        #historyList .card .btn-buy {
+            display: none; /* no buy button in history */
+        }
+
+        .history-date {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        /* ─── EMPTY STATE ───────────────────────────────── */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: #c8d8c8;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+            margin: 0;
+        }
+
+        /* ─── FOOTER ────────────────────────────────────── */
+        .footer {
+            text-align: center;
+            padding: 28px 20px;
+            color: var(--text-muted);
+            font-size: 13px;
+            border-top: 1px solid var(--beige);
+            margin-top: 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer span {
+            color: var(--green-light);
+            font-weight: 600;
+        }
+
+        /* ─── RESPONSIVE ────────────────────────────────── */
+        @media (max-width: 768px) {
+            .header { padding: 0 20px; }
+            .hero { padding: 24px 20px 20px; }
+            .hero-inner { padding: 32px 28px; flex-direction: column; gap: 20px; }
+            .hero-title { font-size: 26px; }
+            .hero-emoji { font-size: 60px; }
+            .container { padding: 0 20px 40px; }
+            .section-header { flex-wrap: wrap; }
+            .section-divider { display: none; }
+            .grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+            .logo-text { font-size: 18px; }
+            .btn-history { padding: 8px 12px; font-size: 12px; }
+        }
+
+        @media (max-width: 480px) {
+            .grid { grid-template-columns: 1fr; }
+            .hero-badges { gap: 6px; }
+        }
+
+        /* ─── STAGGERED CARD ANIMATION ──────────────────── */
+        .card:nth-child(1)  { animation-delay: 0.05s; }
+        .card:nth-child(2)  { animation-delay: 0.10s; }
+        .card:nth-child(3)  { animation-delay: 0.15s; }
+        .card:nth-child(4)  { animation-delay: 0.20s; }
+        .card:nth-child(5)  { animation-delay: 0.25s; }
+        .card:nth-child(6)  { animation-delay: 0.30s; }
+        .card:nth-child(7)  { animation-delay: 0.35s; }
+        .card:nth-child(8)  { animation-delay: 0.40s; }
+    </style>
+</head>
+
+<body>
+
+<!-- ─── HEADER ─────────────────────────────────────── -->
+<header class="header">
+    <div class="header-logo">
+        <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+        <div class="logo-text">Agri<span>Market</span></div>
+    </div>
+    <div class="header-actions">
+        <button class="btn-history" onclick="viewBuyerHistory()">
+            <i class="fa-regular fa-clock"></i> My History
+        </button>
+        <button id="walletBox" onclick="rechargeWallet()">
+            <i class="fa-solid fa-wallet"></i> Wallet: Rs. 0
+        </button>
+    </div>
+</header>
+
+<!-- ─── HERO ───────────────────────────────────────── -->
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-text">
+            <div class="hero-eyebrow">🌱 India's Agri-Tech Marketplace</div>
+            <h1 class="hero-title">Farm to Table,<br>Direct & Fresh</h1>
+            <p class="hero-subtitle">Buy directly from local farmers. Fresh produce, fair prices, and transparent sourcing — every single day.</p>
+            <div class="hero-badges">
+                <span class="badge"><i class="fa-solid fa-check-circle"></i> Verified Farmers</span>
+                <span class="badge"><i class="fa-solid fa-bolt"></i> Instant Purchase</span>
+                <span class="badge"><i class="fa-solid fa-shield-halved"></i> Secure Wallet</span>
+            </div>
+        </div>
+        <div class="hero-emoji">🌿</div>
+    </div>
+</section>
+
+<!-- ─── MAIN CONTENT ───────────────────────────────── -->
+<div class="container">
+
+    <!-- Products Section -->
+    <div class="section-header">
+        <div class="section-icon green"><i class="fa-solid fa-store"></i></div>
+        <div class="section-title-wrap">
+            <h2>Available Products</h2>
+            <p>Fresh stock from verified local farmers</p>
+        </div>
+        <div class="section-divider"></div>
+    </div>
+
+    <div id="productList" class="grid"></div>
+
+    <!-- Message -->
+    <div id="msg" class="message"></div>
+
+    <!-- History Section -->
+    <div class="history-section">
+        <div class="section-header">
+            <div class="section-icon gold"><i class="fa-solid fa-receipt"></i></div>
+            <div class="section-title-wrap">
+                <h2>My Purchase History</h2>
+                <p>Your recent transactions and orders</p>
+            </div>
+            <div class="section-divider"></div>
+        </div>
+        <div id="historyList" class="grid"></div>
+    </div>
+
+</div>
+
+<!-- ─── FOOTER ─────────────────────────────────────── -->
+<footer class="footer">
+    <p>© 2025 <span>AgriMarket</span> · Connecting Farmers & Buyers Across India 🌿</p>
+</footer>
 
 
-	    // BUY PRODUCT
-	    function buyProduct(productId) {
+<script>
+    /* ─── PRODUCT EMOJI MAP ─────────────────────────────── */
+    function getEmoji(name) {
+        if (!name) return '🌾';
+        const n = name.toLowerCase();
+        if (n.includes('rice') || n.includes('paddy')) return '🌾';
+        if (n.includes('wheat')) return '🌾';
+        if (n.includes('tomato')) return '🍅';
+        if (n.includes('potato')) return '🥔';
+        if (n.includes('onion')) return '🧅';
+        if (n.includes('corn') || n.includes('maize')) return '🌽';
+        if (n.includes('mango')) return '🥭';
+        if (n.includes('banana')) return '🍌';
+        if (n.includes('apple')) return '🍎';
+        if (n.includes('carrot')) return '🥕';
+        if (n.includes('milk') || n.includes('dairy')) return '🥛';
+        if (n.includes('egg')) return '🥚';
+        if (n.includes('chilli') || n.includes('chili')) return '🌶️';
+        if (n.includes('brinjal') || n.includes('eggplant')) return '🍆';
+        if (n.includes('cabbage')) return '🥬';
+        if (n.includes('spinach') || n.includes('green')) return '🥦';
+        if (n.includes('lemon') || n.includes('lime')) return '🍋';
+        if (n.includes('coconut')) return '🥥';
+        if (n.includes('peanut') || n.includes('groundnut')) return '🥜';
+		if (n.includes('Strawberry')) return '🍓';
+        return '🌱';
+    }
 
-	        let buyerId = document.getElementById("buyerId").value;
-	        let qty = prompt("Enter quantity:");
+    /* ─── LOAD PRODUCTS ─────────────────────────────────── */
+    function loadProducts() {
+        fetch("http://localhost:8080/products")
+        .then(res => {
+            if (!res.ok) throw new Error("API failed");
+            return res.json();
+        })
+        .then(data => {
+            let container = document.getElementById("productList");
+            container.innerHTML = "";
 
-	        // ✅ VALIDATION
-	        if (!buyerId) {
-	            alert("Please enter Buyer ID");
-	            return;
-	        }
+            if (!data || data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-box-open"></i>
+                        <p>No products available right now. Check back soon!</p>
+                    </div>`;
+                return;
+            }
 
-	        if (!qty || isNaN(qty) || qty <= 0) {
-	            alert("Enter valid quantity");
-	            return;
-	        }
+            data.forEach(p => {
+                let card = document.createElement("div");
+                card.className = "card";
+                const emoji = getEmoji(p.name);
+                const inStock = p.qty > 0;
 
-	        fetch("http://localhost:8080/purchase", {
-	            method: "POST",
-	            headers: {
-	                "Content-Type": "application/json"
-	            },
-	            body: JSON.stringify({
-	                productId: productId,
-	                buyerId: parseInt(buyerId),
-	                qty: parseInt(qty)
-	            })
-	        })
-	        .then(res => res.text())
-	        .then(msg => {
+                card.innerHTML = `
+                    <div class="card-top">
+                        <div class="product-emoji">${emoji}</div>
+                        <span class="stock-badge ${inStock ? 'in-stock' : 'out-stock'}">
+                            ${inStock ? '● In Stock' : '● Out of Stock'}
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="name">${p.name}</div>
+                        <div class="price">Rs. ${p.price} <span class="price-label">/ unit</span></div>
+                        <div class="card-meta">
+                            <div class="meta-row qty">
+                                <i class="fa-solid fa-cubes"></i>
+                                Stock: <strong>${p.qty}</strong> units
+                            </div>
+                            <div class="meta-row farmer">
+                                <i class="fa-solid fa-person"></i>
+                                ${p.farmer?.name || "Unknown Farmer"}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn-buy"
+                            onclick="buyProduct(${p.id})"
+                            ${!inStock ? "disabled" : ""}
+                        >
+                            ${inStock
+                                ? `<i class="fa-solid fa-cart-plus"></i> Buy Now`
+                                : `<i class="fa-solid fa-ban"></i> Out of Stock`
+                            }
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById("productList").innerHTML =
+                `<div class="empty-state">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <p>Failed to load products. Please check your connection.</p>
+                </div>`;
+        });
+    }
 
-	            let msgBox = document.getElementById("msg");
+    /* ─── BUY PRODUCT ───────────────────────────────────── */
+    function buyProduct(productId) {
+        let buyerId = localStorage.getItem("buyerId");
+        let qty = prompt("Enter quantity to buy:");
 
-	            msgBox.innerText = msg;
+        if (!buyerId) {
+            alert("Please enter Buyer ID");
+            return;
+        }
+        if (!qty || isNaN(qty) || qty <= 0) {
+            alert("Enter valid quantity");
+            return;
+        }
 
-	            // ✅ BETTER MESSAGE COLORS
-	            if (msg.toLowerCase().includes("success")) {
-	                msgBox.style.color = "green";
-	            } else {
-	                msgBox.style.color = "red";
-	            }
+        fetch("http://localhost:8080/purchase", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                productId: productId,
+                buyerId: parseInt(buyerId),
+                qty: parseInt(qty)
+            })
+        })
+        .then(res => res.text())
+        .then(msg => {
+            let msgBox = document.getElementById("msg");
+            msgBox.innerText = msg;
 
-	            loadProducts(); // refresh UI
-	        })
-	        .catch(err => {
-	            console.error(err);
+            if (msg.toLowerCase().includes("success")) {
+                msgBox.className = "message success";
+                msgBox.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${msg}`;
+                loadBuyerWallet();
+				loadProducts();
+            } else {
+                msgBox.className = "message error";
+                msgBox.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> ${msg}`;
+            }
 
-	            let msgBox = document.getElementById("msg");
-	            msgBox.innerText = "Purchase failed";
-	            msgBox.style.color = "red";
-	        });
-	    }
-		
-		function loadBuyers() {
-		        fetch("http://localhost:8080/buyer")
-		        .then(res => {
-		            if (!res.ok) throw new Error("Buyer API failed");
-		            return res.json();
-		        })
-		        .then(data => {
+			viewBuyerHistory();
+        })
+        .catch(err => {
+            console.error(err);
+            let msgBox = document.getElementById("msg");
+            msgBox.className = "message error";
+            msgBox.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Purchase failed. Try again.`;
+        });
+    }
 
-		            let dropdown = document.getElementById("buyerId");
-		            dropdown.innerHTML = `<option value="">-- Select Buyer --</option>`;
+    /* ─── LOAD BUYERS ───────────────────────────────────── */
+    
 
-		            data.forEach(b => {
-		                let option = document.createElement("option");
+    /* ─── VIEW BUYER HISTORY ────────────────────────────── */
+    function viewBuyerHistory() {
+        let buyerId = localStorage.getItem("buyerId");
 
-		                option.value = b.id;
-		                option.text = `${b.name} (Balance: Rs.${b.bal})`;
+        if (!buyerId) {
+            alert("Please select Buyer");
+            return;
+        }
 
-		                dropdown.appendChild(option);
-		            });
-		        })
-		        .catch(err => {
-		            console.error(err);
-		        });
-		    }
+        fetch(`http://localhost:8080/transactions/buyer/${buyerId}`)
+        .then(res => {
+            if (!res.ok) throw new Error("History fetch failed");
+            return res.json();
+        })
+        .then(data => {
+            let container = document.getElementById("historyList");
+            container.innerHTML = "";
 
-			function viewBuyerHistory() {
+            if (!data || data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <p>No purchase history found yet. Start shopping!</p>
+                    </div>`;
+                return;
+            }
 
-			    let buyerId = document.getElementById("buyerId").value;
-					
-			    if (!buyerId) {
-			        alert("Please select Buyer");
-			        return;
-			    }
+            data.forEach(t => {
+                let card = document.createElement("div");
+                card.className = "card";
+                const emoji = getEmoji(t.product?.name);
 
-			    fetch(`http://localhost:8080/transactions/buyer/${buyerId}`)
-			    .then(res => {
-			        if (!res.ok) throw new Error("History fetch failed");
-			        return res.json();
-			    })
-			    .then(data => {
+                card.innerHTML = `
+                    <div class="card-top">
+                        <div class="product-emoji">${emoji}</div>
+                        <span class="stock-badge in-stock">
+                            <i class="fa-solid fa-check"></i> Purchased
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="name">${t.product?.name || "Unknown Product"}</div>
+                        <div class="price">Rs. ${t.totalPrice}</div>
+                        <div class="card-meta">
+                            <div class="meta-row qty">
+                                <i class="fa-solid fa-cubes"></i>
+                                Qty: <strong>${t.qty}</strong> units
+                            </div>
+                            <div class="meta-row farmer">
+                                <i class="fa-solid fa-person"></i>
+                                ${t.farmer?.name || "Unknown Farmer"}
+                            </div>
+                            <div class="history-date">
+                                <i class="fa-regular fa-calendar"></i>
+                                ${t.purchaseDate}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
 
-			        let container = document.getElementById("historyList");
-			        container.innerHTML = "";
+            document.getElementById("historyList").scrollIntoView({ behavior: "smooth" });
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById("historyList").innerHTML =
+                `<div class="empty-state">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <p>Failed to load history. Please try again.</p>
+                </div>`;
+        });
+    }
 
-			        if (!data || data.length === 0) {
-			            container.innerHTML = "<p>No purchase history found</p>";
-			            return;
-			        }
+    /* ─── LOAD BUYER WALLET ─────────────────────────────── */
+    function loadBuyerWallet() {
+        let buyerId = localStorage.getItem("buyerId");
 
-			        data.forEach(t => {
+        if (!buyerId) {
+            alert("Please login first");
+            window.location.href = "login.html";
+            return;
+        }
 
-			            let card = document.createElement("div");
-			            card.className = "card";
+        fetch(`http://localhost:8080/buyer/${buyerId}`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("walletBox").innerHTML =
+                `<i class="fa-solid fa-wallet"></i> Wallet: Rs. ${data.wallet}`;
+        });
+    }
 
-						card.innerHTML = `
-						    <div class="name">${t.product?.name || "Unknown Product"}</div>
-						    <div class="qty">Qty: ${t.qty}</div>
-						    <div class="price">Total: Rs. ${t.totalPrice}</div>
-						    <div class="farmer">Farmer: ${t.farmer?.name || "Unknown Farmer"}</div>
-						    <div>Date: ${t.purchaseDate}</div>
-						`;
+    /* ─── RECHARGE WALLET ───────────────────────────────── */
+    function rechargeWallet() {
+        let buyerId = localStorage.getItem("buyerId");
 
-			            container.appendChild(card);
-			        });
-					document.getElementById("historyList").scrollIntoView({
-					    behavior: "smooth"
-					});
+        if (!buyerId) {
+            alert("Please login first");
+            window.location.href = "login.html";
+            return;
+        }
 
-			    })
-			    .catch(err => {
-			        console.error(err);
-			        document.getElementById("historyList").innerHTML =
-			            "<p>Failed to load history</p>";
-			    });
-			}
-			
-	    // INITIAL LOAD
-		loadBuyers();
-		loadProducts();
+        let amount = prompt("Enter recharge amount (Rs.):");
 
-	</script>
+        if (!amount || isNaN(amount) || amount <= 0) {
+            alert("Enter valid amount");
+            return;
+        }
 
-	</body>
+        fetch(`http://localhost:8080/buyer/recharge/${buyerId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ amount: parseInt(amount) })
+        })
+        .then(res => res.text())
+        .then(msg => {
+            alert(msg);
+            loadBuyerWallet();
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Recharge failed");
+        });
+    }
 
+    /* ─── INITIAL LOAD ──────────────────────────────────── */
+    loadProducts();
+    loadBuyerWallet();
+	viewBuyerHistory();
+</script>
+
+</body>
 </html>
