@@ -629,7 +629,7 @@
         <button class="btn-history" onclick="viewBuyerHistory()">
             <i class="fa-regular fa-clock"></i> My History
         </button>
-        <button id="walletBox" onclick="rechargeWallet()">
+        <button id="walletBox" onclick="openWalletPage()">
             <i class="fa-solid fa-wallet"></i> Wallet: Rs. 0
         </button>
     </div>
@@ -932,39 +932,10 @@
                 `<i class="fa-solid fa-wallet"></i> Wallet: Rs. ${data.wallet}`;
         });
     }
-
-    /* ─── RECHARGE WALLET ───────────────────────────────── */
-    function rechargeWallet() {
-        let buyerId = localStorage.getItem("buyerId");
-
-        if (!buyerId) {
-            alert("Please login first");
-            window.location.href = "login.html";
-            return;
-        }
-
-        let amount = prompt("Enter recharge amount (Rs.):");
-
-        if (!amount || isNaN(amount) || amount <= 0) {
-            alert("Enter valid amount");
-            return;
-        }
-
-        fetch(`http://localhost:8080/buyer/recharge/${buyerId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ amount: parseInt(amount) })
-        })
-        .then(res => res.text())
-        .then(msg => {
-            alert(msg);
-            loadBuyerWallet();
-        })
-        .catch(err => {
-            console.error(err);
-            alert("Recharge failed");
-        });
-    }
+	
+	function openWalletPage() {
+	    window.location.href = "wallet.html";
+	}
 
     /* ─── INITIAL LOAD ──────────────────────────────────── */
     loadProducts();
