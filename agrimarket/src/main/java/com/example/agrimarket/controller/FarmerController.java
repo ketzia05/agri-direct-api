@@ -1,6 +1,10 @@
-package com.example.agrimarket;
+package com.example.agrimarket.controller;
 
 import org.springframework.web.bind.annotation.*;
+
+import com.example.agrimarket.dto.LoginRequest;
+import com.example.agrimarket.model.Farmer;
+import com.example.agrimarket.service.FarmerService;
 
 @RestController
 @CrossOrigin("*")

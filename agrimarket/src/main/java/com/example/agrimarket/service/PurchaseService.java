@@ -1,8 +1,14 @@
-package com.example.agrimarket;
+package com.example.agrimarket.service;
 
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
+
+import com.example.agrimarket.model.Buyer;
+import com.example.agrimarket.model.Farmer;
+import com.example.agrimarket.model.Product;
+import com.example.agrimarket.model.Transaction;
+import com.example.agrimarket.repository.*;
 
 @Service
 public class PurchaseService {

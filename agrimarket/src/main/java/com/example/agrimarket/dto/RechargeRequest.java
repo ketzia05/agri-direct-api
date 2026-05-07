@@ -1,4 +1,4 @@
-package com.example.agrimarket;
+package com.example.agrimarket.dto;
 
 public class RechargeRequest {
 

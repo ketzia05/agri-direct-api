@@ -1,6 +1,10 @@
-package com.example.agrimarket;
+package com.example.agrimarket.service;
 
 import org.springframework.stereotype.Service;
+
+import com.example.agrimarket.dto.*;
+import com.example.agrimarket.model.Buyer;
+import com.example.agrimarket.repository.BuyerRepository;
 
 @Service
 public class BuyerService {

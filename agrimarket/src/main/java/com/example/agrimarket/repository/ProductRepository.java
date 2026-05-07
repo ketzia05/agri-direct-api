@@ -1,6 +1,8 @@
-package com.example.agrimarket;
+package com.example.agrimarket.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example.agrimarket.model.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 

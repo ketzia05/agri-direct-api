@@ -1,4 +1,4 @@
-package com.example.agrimarket;
+package com.example.agrimarket.model;
 
 import java.time.LocalDateTime;
 

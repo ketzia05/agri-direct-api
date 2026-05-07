@@ -1,6 +1,9 @@
-package com.example.agrimarket;
+package com.example.agrimarket.controller;
 
 import org.springframework.web.bind.annotation.*;
+
+import com.example.agrimarket.dto.PurchaseRequest;
+import com.example.agrimarket.service.PurchaseService;
 
 @RestController
 public class PurchaseController {

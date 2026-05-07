@@ -1,4 +1,4 @@
-package com.example.agrimarket;
+package com.example.agrimarket.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.*;
